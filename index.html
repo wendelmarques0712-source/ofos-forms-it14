@@ -389,22 +389,19 @@
 </div>
 
 <script>
-  // Script para a máscara de WhatsApp
+  // Script para a máscara de WhatsApp robusta (Suporta Auto-fill e colagem)
   document.getElementById('whatsapp').addEventListener('input', function (e) {
-    let value = e.target.value.replace(/\D/g, ''); // Remove tudo que não é número
-    let formattedValue = '';
+    let v = e.target.value.replace(/\D/g, ""); // Só permite números
+    v = v.substring(0, 11); // Limita a 11 números no total
 
-    if (value.length > 0) {
-      formattedValue = value.substring(0, 2); // DDD
-    }
-    if (value.length > 2) {
-      formattedValue += ' ' + value.substring(2, 7); // Primeiros 5 dígitos
-    }
-    if (value.length > 7) {
-      formattedValue += '-' + value.substring(7, 11); // Últimos 4 dígitos
+    // Formata o número (Ex: 11 98352-9960)
+    if (v.length > 2 && v.length <= 7) {
+      v = v.replace(/^(\d{2})(\d+)/, "$1 $2"); // Coloca o espaço após o DDD
+    } else if (v.length > 7) {
+      v = v.replace(/^(\d{2})(\d{5})(\d+)/, "$1 $2-$3"); // Coloca espaço e hífen
     }
     
-    e.target.value = formattedValue;
+    e.target.value = v;
   });
 
   function irParaPasso2() {
@@ -429,16 +426,12 @@
 
   function irParaPasso3() {
     const cargo = document.getElementById('cargo').value;
-    const whatsapp = document.getElementById('whatsapp').value;
+    
+    // Validação inteligente do WhatsApp: conta apenas os números, ignorando espaços/hífens
+    const whatsappNumeros = document.getElementById('whatsapp').value.replace(/\D/g, "");
 
-    if (!cargo || !whatsapp) {
-      alert("Por favor, preencha todos os campos antes de continuar.");
-      return;
-    }
-
-    // Validação para garantir que o WhatsApp foi preenchido corretamente
-    if (whatsapp.length < 13) {
-      alert("Por favor, preencha o número de WhatsApp corretamente (Ex: 11 98352-9960).");
+    if (!cargo || whatsappNumeros.length < 10) {
+      alert("Por favor, preencha o cargo e um número de WhatsApp válido.");
       return;
     }
 
@@ -483,6 +476,7 @@
       return;
     }
 
-    window.location.href = "https://lp2.ofos.com.br/obrigado-pelo-cadastro-lp2";
+    // Usando window.top.location.href para tirar da janela do Iframe e mudar a página inteira
+    window.top.location.href = "https://lp2.ofos.com.br/obrigado-pelo-cadastro-lp2";
   }
 </script>
