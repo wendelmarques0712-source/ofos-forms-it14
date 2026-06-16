@@ -1,0 +1,488 @@
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Oswald:wght@700&display=swap');
+
+  :root {
+    --ofos-orange: #f29100;
+    --bg-dark: #1a1a1a;
+    --bg-input: #2b2b2b;
+    --border-input: #3d3d3d;
+    --text-white: #ffffff;
+    --text-grey: #b3b3b3;
+    --font-title: 'Oswald', sans-serif;
+    --font-body: 'Montserrat', sans-serif;
+  }
+
+  /* Container do Formulário Mais Compacto */
+  .ofos-dark-form {
+    background-color: var(--bg-dark);
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 28px 32px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-family: var(--font-body);
+    color: var(--text-white);
+  }
+
+  .ofos-dark-form *, .ofos-dark-form *::before, .ofos-dark-form *::after {
+    box-sizing: border-box;
+  }
+
+  /* Cabeçalho */
+  .form-eyebrow {
+    font-family: var(--font-title);
+    font-size: 13px;
+    color: var(--ofos-orange);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  .form-header h2 {
+    font-family: var(--font-title);
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text-white);
+    text-transform: uppercase;
+    line-height: 1.1;
+    margin: 0 0 10px 0;
+  }
+
+  .form-header p {
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--text-grey);
+    margin: 0 0 16px 0;
+  }
+
+  /* Barra de Progresso (Agora dividida em 4) */
+  .progress-container {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+
+  .progress-bar {
+    flex: 1;
+    height: 4px;
+    background-color: #333333; 
+    border-radius: 2px;
+    transition: background-color 0.3s ease;
+  }
+
+  .progress-bar.active {
+    background-color: var(--ofos-orange); 
+  }
+
+  /* Indicador de Passo */
+  .step-title {
+    font-family: var(--font-title);
+    font-size: 15px;
+    color: var(--ofos-orange);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: block;
+    letter-spacing: 0.5px;
+  }
+
+  .step-subtitle {
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--text-white);
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: block;
+    letter-spacing: 0.5px;
+  }
+
+  /* Inputs e Selects Menores */
+  .form-group {
+    margin-bottom: 14px;
+  }
+
+  .form-group input[type="text"],
+  .form-group input[type="tel"],
+  .form-group select {
+    width: 100%;
+    height: 48px;
+    background-color: var(--bg-input);
+    border: 1px solid var(--border-input);
+    border-radius: 6px;
+    padding: 0 14px;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--text-white);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    appearance: none; 
+  }
+
+  .form-group input::placeholder {
+    color: var(--text-grey);
+    font-weight: 500;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: var(--ofos-orange);
+  }
+
+  /* Customização específica do Select */
+  .form-group select {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 16px;
+    padding-right: 40px;
+    cursor: pointer;
+  }
+
+  .form-group select option {
+    background-color: var(--bg-dark);
+    color: var(--text-white);
+  }
+
+  /* Customização dos Checkboxes da Etapa 3 */
+  .checkbox-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .custom-checkbox-label {
+    display: flex;
+    align-items: center;
+    background-color: var(--bg-input);
+    border: 1px solid var(--border-input);
+    border-radius: 6px;
+    padding: 14px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-white);
+    text-transform: uppercase;
+    user-select: none;
+  }
+
+  .custom-checkbox-label:hover {
+    border-color: var(--text-grey);
+  }
+
+  .custom-checkbox-label input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+
+  .checkmark {
+    width: 20px;
+    height: 20px;
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border-input);
+    border-radius: 4px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+  }
+
+  .custom-checkbox-label input:checked ~ .checkmark {
+    background-color: var(--ofos-orange);
+    border-color: var(--ofos-orange);
+  }
+
+  .custom-checkbox-label input:checked ~ .checkmark::after {
+    content: "";
+    display: block;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    margin-bottom: 2px;
+  }
+
+  .custom-checkbox-label:has(input:checked) {
+    border-color: var(--ofos-orange);
+  }
+
+  /* Botões */
+  .btn-submit {
+    width: 100%;
+    height: 52px;
+    background-color: var(--ofos-orange);
+    color: var(--text-white);
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 16px;
+    border: none;
+    border-radius: 99px;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .btn-submit:hover {
+    background-color: #d98200;
+    transform: translateY(-2px);
+  }
+
+  .btn-back {
+    width: 100%;
+    background-color: transparent;
+    color: var(--text-grey);
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    margin-top: 12px;
+    text-decoration: underline;
+  }
+
+  .btn-back:hover {
+    color: var(--text-white);
+  }
+
+  /* Controle de Etapas */
+  .step-content {
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .step-content.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Responsividade */
+  @media (max-width: 480px) {
+    .ofos-dark-form {
+      padding: 24px 20px;
+    }
+    .form-header h2 {
+      font-size: 26px;
+    }
+    .checkbox-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="ofos-dark-form">
+  <div class="form-header">
+    <span class="form-eyebrow">OFOS SOLUÇÕES CONTRA INCÊNDIO</span>
+    <h2>Solicite um Diagnóstico<br>Técnico Gratuito</h2>
+    <p>Resposta imediata!</p>
+    
+    <div class="progress-container">
+      <div class="progress-bar active" id="pb-1"></div>
+      <div class="progress-bar" id="pb-2"></div>
+      <div class="progress-bar" id="pb-3"></div>
+      <div class="progress-bar" id="pb-4"></div>
+    </div>
+  </div>
+
+  <form id="form-diagnostico" onsubmit="enviarFormulario(event)">
+    
+    <div class="step-content active" id="step-1">
+      <span class="step-title">PASSO 1 DE 4:</span>
+      
+      <div class="form-group">
+        <input type="text" id="nome" placeholder="Nome:" required>
+      </div>
+      <div class="form-group">
+        <input type="text" id="empresa" placeholder="Empresa:" required>
+      </div>
+
+      <button type="button" class="btn-submit" onclick="irParaPasso2()">Continuar</button>
+    </div>
+
+    <div class="step-content" id="step-2">
+      <span class="step-title">PASSO 2 DE 4:</span>
+      
+      <div class="form-group">
+        <input type="text" id="cargo" placeholder="Cargo:" required>
+      </div>
+      <div class="form-group">
+        <input type="tel" id="whatsapp" placeholder="WhatsApp (Ex: 11 98352-9960):" maxlength="13" required>
+      </div>
+
+      <button type="button" class="btn-submit" onclick="irParaPasso3()">Continuar</button>
+      <button type="button" class="btn-back" onclick="voltarParaPasso1()">← Voltar</button>
+    </div>
+
+    <div class="step-content" id="step-3">
+      <span class="step-title">PASSO 3 DE 4:</span>
+      <span class="step-subtitle">SISTEMA A INSTALAR / ADEQUAR</span>
+      
+      <div class="checkbox-grid">
+        <label class="custom-checkbox-label">
+          <input type="checkbox" name="sistema_incendio" value="Sprinkler">
+          <span class="checkmark"></span>
+          SPRINKLER
+        </label>
+        <label class="custom-checkbox-label">
+          <input type="checkbox" name="sistema_incendio" value="Hidrante">
+          <span class="checkmark"></span>
+          HIDRANTE
+        </label>
+        <label class="custom-checkbox-label">
+          <input type="checkbox" name="sistema_incendio" value="Alarme de Incêndio">
+          <span class="checkmark"></span>
+          ALARME DE INCÊNDIO
+        </label>
+        <label class="custom-checkbox-label">
+          <input type="checkbox" name="sistema_incendio" value="Outro">
+          <span class="checkmark"></span>
+          OUTRO
+        </label>
+      </div>
+
+      <button type="button" class="btn-submit" onclick="irParaPasso4()">Continuar</button>
+      <button type="button" class="btn-back" onclick="voltarParaPasso2()">← Voltar</button>
+    </div>
+
+    <div class="step-content" id="step-4">
+      <span class="step-title">PASSO 4 DE 4:</span>
+      
+      <div class="form-group">
+        <select id="tipo-edificacao" required>
+          <option value="" disabled selected>Tipo de Edificação:</option>
+          <option value="Galpão / Logístico">Galpão / Logístico</option>
+          <option value="Indústria">Indústria</option>
+          <option value="Comercial / Corporativo">Comercial / Corporativo</option>
+          <option value="Saúde / Hospital">Saúde / Hospital</option>
+          <option value="Outro">Outro</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <select id="area-imovel" required>
+          <option value="" disabled selected>Área Aproximada do Imóvel:</option>
+          <option value="Até 5.000 m²">Até 5.000 m²</option>
+          <option value="5.000 a 10.000 m²">5.000 a 10.000 m²</option>
+          <option value="10.000 a 30.000 m²">10.000 a 30.000 m²</option>
+          <option value="Acima de 30.000 m²">Acima de 30.000 m²</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn-submit">Solicitar Diagnóstico</button>
+      <button type="button" class="btn-back" onclick="voltarParaPasso3()">← Voltar</button>
+    </div>
+
+  </form>
+</div>
+
+<script>
+  // Script para a máscara de WhatsApp
+  document.getElementById('whatsapp').addEventListener('input', function (e) {
+    let value = e.target.value.replace(/\D/g, ''); // Remove tudo que não é número
+    let formattedValue = '';
+
+    if (value.length > 0) {
+      formattedValue = value.substring(0, 2); // DDD
+    }
+    if (value.length > 2) {
+      formattedValue += ' ' + value.substring(2, 7); // Primeiros 5 dígitos
+    }
+    if (value.length > 7) {
+      formattedValue += '-' + value.substring(7, 11); // Últimos 4 dígitos
+    }
+    
+    e.target.value = formattedValue;
+  });
+
+  function irParaPasso2() {
+    const nome = document.getElementById('nome').value;
+    const empresa = document.getElementById('empresa').value;
+
+    if (!nome || !empresa) {
+      alert("Por favor, preencha todos os campos antes de continuar.");
+      return;
+    }
+
+    document.getElementById('step-1').classList.remove('active');
+    document.getElementById('step-2').classList.add('active');
+    document.getElementById('pb-2').classList.add('active');
+  }
+
+  function voltarParaPasso1() {
+    document.getElementById('step-2').classList.remove('active');
+    document.getElementById('step-1').classList.add('active');
+    document.getElementById('pb-2').classList.remove('active');
+  }
+
+  function irParaPasso3() {
+    const cargo = document.getElementById('cargo').value;
+    const whatsapp = document.getElementById('whatsapp').value;
+
+    if (!cargo || !whatsapp) {
+      alert("Por favor, preencha todos os campos antes de continuar.");
+      return;
+    }
+
+    // Validação para garantir que o WhatsApp foi preenchido corretamente
+    if (whatsapp.length < 13) {
+      alert("Por favor, preencha o número de WhatsApp corretamente (Ex: 11 98352-9960).");
+      return;
+    }
+
+    document.getElementById('step-2').classList.remove('active');
+    document.getElementById('step-3').classList.add('active');
+    document.getElementById('pb-3').classList.add('active');
+  }
+
+  function voltarParaPasso2() {
+    document.getElementById('step-3').classList.remove('active');
+    document.getElementById('step-2').classList.add('active');
+    document.getElementById('pb-3').classList.remove('active');
+  }
+
+  function irParaPasso4() {
+    const sistemasSelecionados = document.querySelectorAll('input[name="sistema_incendio"]:checked');
+
+    if (sistemasSelecionados.length === 0) {
+      alert("Por favor, selecione ao menos uma opção antes de continuar.");
+      return;
+    }
+
+    document.getElementById('step-3').classList.remove('active');
+    document.getElementById('step-4').classList.add('active');
+    document.getElementById('pb-4').classList.add('active');
+  }
+
+  function voltarParaPasso3() {
+    document.getElementById('step-4').classList.remove('active');
+    document.getElementById('step-3').classList.add('active');
+    document.getElementById('pb-4').classList.remove('active');
+  }
+
+  function enviarFormulario(event) {
+    event.preventDefault(); 
+
+    const tipo = document.getElementById('tipo-edificacao').value;
+    const area = document.getElementById('area-imovel').value;
+
+    if (!tipo || !area) {
+      alert("Por favor, selecione as opções finais antes de enviar.");
+      return;
+    }
+
+    window.location.href = "https://lp2.ofos.com.br/obrigado-pelo-cadastro-lp2";
+  }
+</script>
