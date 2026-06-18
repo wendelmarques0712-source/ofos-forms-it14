@@ -57,7 +57,7 @@
     margin: 0 0 16px 0;
   }
 
-  /* Barra de Progresso com 4 Passos */
+  /* Barra de Progresso com 5 Passos */
   .progress-container {
     display: flex;
     gap: 6px;
@@ -144,6 +144,72 @@
     color: var(--text-white);
   }
 
+  /* Estilização dos Checkboxes (Novo Passo) */
+  .checkbox-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    background-color: var(--bg-input);
+    border: 1px solid var(--border-input);
+    border-radius: 6px;
+    padding: 12px 14px;
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    color: var(--text-white);
+    transition: border-color 0.2s ease;
+  }
+
+  .checkbox-label:hover {
+    border-color: var(--text-grey);
+  }
+
+  .checkbox-label input {
+    display: none;
+  }
+
+  .custom-checkbox {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--border-input);
+    border-radius: 4px;
+    margin-right: 10px;
+    display: inline-block;
+    position: relative;
+    background-color: transparent;
+    flex-shrink: 0;
+  }
+
+  .checkbox-label input:checked + .custom-checkbox {
+    background-color: var(--ofos-orange);
+    border-color: var(--ofos-orange);
+  }
+
+  .checkbox-label input:checked + .custom-checkbox::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 2px;
+    width: 4px;
+    height: 8px;
+    border: solid var(--text-white);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  /* Borda laranja se marcado */
+  .checkbox-label:has(input:checked) {
+    border-color: var(--ofos-orange);
+  }
+
   /* Botão Laranja */
   .btn-submit {
     width: 100%;
@@ -213,6 +279,9 @@
     .form-header h2 {
       font-size: 24px;
     }
+    .checkbox-grid {
+      grid-template-columns: 1fr; /* Em telas muito pequenas empilha as opções */
+    }
   }
 </style>
 
@@ -227,13 +296,14 @@
       <div class="progress-bar" id="pb-2"></div>
       <div class="progress-bar" id="pb-3"></div>
       <div class="progress-bar" id="pb-4"></div>
+      <div class="progress-bar" id="pb-5"></div>
     </div>
   </div>
 
   <form id="form-diagnostico" onsubmit="enviarFormulario(event)">
     
     <div class="step-content active" id="step-1">
-      <span class="step-title">PASSO 1 DE 4:</span>
+      <span class="step-title">PASSO 1 DE 5:</span>
       
       <div class="form-group">
         <input type="text" id="nome" placeholder="Nome:" required>
@@ -246,7 +316,7 @@
     </div>
 
     <div class="step-content" id="step-2">
-      <span class="step-title">PASSO 2 DE 4:</span>
+      <span class="step-title">PASSO 2 DE 5:</span>
       
       <div class="form-group">
         <input type="text" id="cargo" placeholder="Cargo:" required>
@@ -260,7 +330,7 @@
     </div>
 
     <div class="step-content" id="step-3">
-      <span class="step-title">PASSO 3 DE 4:</span>
+      <span class="step-title">PASSO 3 DE 5:</span>
       
       <div class="form-group">
         <select id="tipo-edificacao" required>
@@ -278,7 +348,7 @@
     </div>
 
     <div class="step-content" id="step-4">
-      <span class="step-title">PASSO 4 DE 4:</span>
+      <span class="step-title">PASSO 4 DE 5:</span>
       
       <div class="form-group">
         <select id="area-imovel" required>
@@ -290,8 +360,40 @@
         </select>
       </div>
 
-      <button type="submit" class="btn-submit" id="btn-enviar">Solicitar Diagnóstico</button>
+      <button type="button" class="btn-submit" onclick="irParaPasso(5)">Continuar</button>
       <button type="button" class="btn-back" onclick="voltarParaPasso(3)">← Voltar</button>
+    </div>
+
+    <div class="step-content" id="step-5">
+      <span class="step-title">PASSO 5 DE 5:</span>
+      
+      <span style="font-family: var(--font-title); font-size: 15px; color: var(--text-white); margin-bottom: 12px; display: block; letter-spacing: 0.5px;">SISTEMA A INSTALAR / ADEQUAR</span>
+      
+      <div class="checkbox-grid">
+        <label class="checkbox-label">
+          <input type="checkbox" name="sistema" value="Sprinkler">
+          <span class="custom-checkbox"></span>
+          SPRINKLER
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" name="sistema" value="Hidrante">
+          <span class="custom-checkbox"></span>
+          HIDRANTE
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" name="sistema" value="Alarme de Incêndio">
+          <span class="custom-checkbox"></span>
+          ALARME DE INCÊNDIO
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" name="sistema" value="Outro">
+          <span class="custom-checkbox"></span>
+          OUTRO
+        </label>
+      </div>
+
+      <button type="submit" class="btn-submit" id="btn-enviar">Solicitar Diagnóstico</button>
+      <button type="button" class="btn-back" onclick="voltarParaPasso(4)">← Voltar</button>
     </div>
 
   </form>
@@ -376,6 +478,13 @@
         return;
       }
     }
+    if (passoDestino === 5) {
+      const area = document.getElementById('area-imovel').value;
+      if (!area) {
+        alert("Por favor, selecione a área aproximada.");
+        return;
+      }
+    }
 
     // Esconde a atual e mostra a próxima
     document.querySelector('.step-content.active').classList.remove('active');
@@ -401,10 +510,12 @@
   function enviarFormulario(event) {
     event.preventDefault(); 
 
-    const area = document.getElementById('area-imovel').value;
+    // Captura os sistemas marcados
+    const checkboxes = document.querySelectorAll('input[name="sistema"]:checked');
+    const sistemasSelecionados = Array.from(checkboxes).map(cb => cb.value).join(', ');
 
-    if (!area) {
-      alert("Por favor, selecione a área aproximada.");
+    if (!sistemasSelecionados) {
+      alert("Por favor, selecione pelo menos um sistema a instalar ou adequar.");
       return;
     }
 
@@ -423,7 +534,8 @@
       cargo:          document.getElementById('cargo').value,
       whatsapp:       document.getElementById('whatsapp').value,
       tipoEdificacao: document.getElementById('tipo-edificacao').value,
-      areaImovel:     area,
+      areaImovel:     document.getElementById('area-imovel').value,
+      sistemas:       sistemasSelecionados, // NOVA INFO ENVIADA PARA O WEBHOOK
       dataEnvio:      new Date().toLocaleString('pt-BR'),
       timestamp:      new Date().toISOString(),
       utm_source:     tracking.utm_source,
