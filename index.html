@@ -298,15 +298,34 @@
 </div>
 
 <script>
-  // Função para capturar parâmetros UTM da URL
-  function capturarUTMs() {
-    const params = new URLSearchParams(window.location.search);
+  // user_id persistente (identifica o navegador entre sessões)
+  function getUserId() {
+    var key = 'ofos_user_id';
+    var id = localStorage.getItem(key);
+    if (!id) {
+      id = 'u_' + Date.now() + '_' + Math.random().toString(36).substring(2, 10);
+      localStorage.setItem(key, id);
+    }
+    return id;
+  }
+
+  // Captura todos os parâmetros de tracking da URL (injetados pelo iframe embed da LP)
+  function capturarTracking() {
+    const p = new URLSearchParams(window.location.search);
     return {
-      utm_source: params.get('utm_source') || '',
-      utm_medium: params.get('utm_medium') || '',
-      utm_campaign: params.get('utm_campaign') || '',
-      utm_content: params.get('utm_content') || '',
-      utm_term: params.get('utm_term') || ''
+      utm_source:   p.get('utm_source')   || '',
+      utm_medium:   p.get('utm_medium')   || '',
+      utm_campaign: p.get('utm_campaign') || '',
+      utm_content:  p.get('utm_content')  || '',
+      utm_term:     p.get('utm_term')     || '',
+      gclid:        p.get('gclid')        || '',
+      fbclid:       p.get('fbclid')       || '',
+      fbp:          p.get('fbp')          || '',
+      fbc:          p.get('fbc')          || '',
+      event_id:     p.get('event_id')     || '',
+      page_url:     p.get('page_url')     || document.referrer || '',
+      user_agent:   p.get('user_agent')   || navigator.userAgent || '',
+      user_id:      getUserId()
     };
   }
 
@@ -394,31 +413,36 @@
     btnEnviar.disabled = true;
     btnEnviar.textContent = 'Enviando...';
 
-    // Captura UTMs
-    const utms = capturarUTMs();
+    // Captura todos os parâmetros de tracking
+    const tracking = capturarTracking();
 
-    // Coleta todos os dados do formulário + UTMs
+    // Coleta todos os dados do formulário + tracking completo
     const dadosFormulario = {
-      nome: document.getElementById('nome').value,
-      empresa: document.getElementById('empresa').value,
-      cargo: document.getElementById('cargo').value,
-      whatsapp: document.getElementById('whatsapp').value,
+      nome:           document.getElementById('nome').value,
+      empresa:        document.getElementById('empresa').value,
+      cargo:          document.getElementById('cargo').value,
+      whatsapp:       document.getElementById('whatsapp').value,
       tipoEdificacao: document.getElementById('tipo-edificacao').value,
-      areaImovel: area,
-      dataEnvio: new Date().toLocaleString('pt-BR'),
-      timestamp: new Date().toISOString(),
-      utm_source: utms.utm_source,
-      utm_medium: utms.utm_medium,
-      utm_campaign: utms.utm_campaign,
-      utm_content: utms.utm_content,
-      utm_term: utms.utm_term
+      areaImovel:     area,
+      dataEnvio:      new Date().toLocaleString('pt-BR'),
+      timestamp:      new Date().toISOString(),
+      utm_source:     tracking.utm_source,
+      utm_medium:     tracking.utm_medium,
+      utm_campaign:   tracking.utm_campaign,
+      utm_content:    tracking.utm_content,
+      utm_term:       tracking.utm_term,
+      gclid:          tracking.gclid,
+      fbclid:         tracking.fbclid,
+      fbp:            tracking.fbp,
+      fbc:            tracking.fbc,
+      event_id:       tracking.event_id,
+      page_url:       tracking.page_url,
+      user_agent:     tracking.user_agent,
+      user_id:        tracking.user_id
     };
 
-    // URL do webhook
-    const webhookURL = "https://hook.us1.make.celonis.com/7uelgmvl76k099wcolt5idp4nx1mcc6x";
-
-    // Enviar dados para o webhook
-    fetch(webhookURL, {
+    // Proxy serverless — webhook nunca exposto no cliente
+    fetch('/api/submit', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
